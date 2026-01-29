@@ -1,0 +1,130 @@
+#!/bin/sh
+# ----------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#    https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+# ----------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------
+# Maven Wrapper
+# ----------------------------------------------------------------------------
+
+if [ -z "$JAVA_HOME" ] ; then
+  if [ -r /etc/gentoo-release ] ; then
+    JAVA_HOME=`java-config --jre-home`
+  fi
+fi
+
+# For Cygwin, ensure paths are in UNIX format before anything is touched
+if $cygwin ; then
+  [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
+fi
+
+# Review the long-term support for skipping the wrapper in favor of the
+# user-installed Maven.
+if [ -n "$MVNW_VERBOSE" ]; then
+  echo "Found JAVA_HOME=$JAVA_HOME"
+fi
+
+# Traversing upwards to find the wrapper properties file
+find_maven_basedir() {
+  local basedir=$(pwd)
+  local wdir=$(pwd)
+  while [ "$wdir" != '/' ] ; do
+    if [ -f "$wdir/.mvn/wrapper/maven-wrapper.properties" ] ; then
+      basedir=$wdir
+      break
+    fi
+    wdir=$(dirname "$wdir")
+  done
+  echo "$basedir"
+}
+
+BASE_DIR=$(find_maven_basedir)
+if [ -z "$BASE_DIR" ]; then
+  BASE_DIR=$(pwd)
+fi
+
+WRAPPER_JAR=".mvn/wrapper/maven-wrapper.jar"
+WRAPPER_LAUNCHER="org.apache.maven.wrapper.MavenWrapperMain"
+
+# If the wrapper jar is missing, try to download it
+if [ ! -r "$BASE_DIR/$WRAPPER_JAR" ]; then
+    if [ -f "$BASE_DIR/.mvn/wrapper/maven-wrapper.properties" ]; then
+        wrapperUrl=$(grep "^wrapperUrl=" "$BASE_DIR/.mvn/wrapper/maven-wrapper.properties" | cut -d= -f2 | tr -d '\r')
+    fi
+    if [ -z "$wrapperUrl" ]; then
+        wrapperUrl="https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.3.2/maven-wrapper-3.3.2.jar"
+    fi
+    
+    jarUrl="$wrapperUrl"
+    
+    if [ -n "$MVNW_VERBOSE" ]; then 
+        echo "Downloading $jarUrl to $BASE_DIR/$WRAPPER_JAR" 
+    fi
+    
+    if command -v wget > /dev/null; then
+        wget "$jarUrl" -O "$BASE_DIR/$WRAPPER_JAR"
+    elif command -v curl > /dev/null; then
+        curl -o "$BASE_DIR/$WRAPPER_JAR" "$jarUrl"
+    else
+        # Fallback to python if available (macOS often has it)
+        if command -v python3 > /dev/null; then
+            python3 -c "import urllib.request; urllib.request.urlretrieve('$jarUrl', '$BASE_DIR/$WRAPPER_JAR')"
+        else
+            echo "Error: Neither wget, curl, nor python3 found"
+            exit 1
+        fi
+    fi
+    
+    if [ $? -ne 0 ]; then
+        echo "Failed to download $jarUrl"
+        exit 1
+    fi
+fi
+
+# Determine the Java command to use to start the JVM.
+if [ -n "$JAVA_HOME" ] ; then
+    if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
+        # IBM's JDK on AIX uses strange locations for the executables
+        JAVACMD="$JAVA_HOME/jre/sh/java"
+    else
+        JAVACMD="$JAVA_HOME/bin/java"
+    fi
+    if [ ! -x "$JAVACMD" ] ; then
+        echo "The JAVA_HOME environment variable is not defined correctly" 1>&2
+        echo "This environment variable is needed to run this program" 1>&2
+        echo "NB: JAVA_HOME should point to a JDK not a JRE" 1>&2
+        exit 1
+    fi
+else
+    JAVACMD="java"
+    which java >/dev/null 2>&1 || {
+        echo "Error: JAVA_HOME is not defined correctly." 1>&2
+        echo "  We cannot execute $JAVACMD" 1>&2
+        exit 1
+    }
+fi
+
+if [ -z "$MAVEN_ARGS" ] ; then
+  export MAVEN_ARGS=""
+fi
+
+exec "$JAVACMD" \
+  $MAVEN_OPTS \
+  -classpath "$BASE_DIR/$WRAPPER_JAR" \
+  "-Dmaven.multiModuleProjectDirectory=$BASE_DIR" \
+  $WRAPPER_LAUNCHER "$@"

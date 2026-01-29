@@ -1,0 +1,31 @@
+# OS
+.DS_Store
+
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/resources/**
+!**/src/test/resources/**
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# OptiFit Specific
+tomcat-temp/
+tmp/
+.gemini/
+brain/
