@@ -9,7 +9,7 @@ interface FoodFormProps {
 export default function FoodForm({ onFoodAdded }: FoodFormProps) {
     const [name, setName] = useState('');
     const [calories, setCalories] = useState(500);
-    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+    const [date] = useState(new Date().toISOString().split('T')[0]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { token } = useAuth();
 
