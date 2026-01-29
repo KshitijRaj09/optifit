@@ -49,8 +49,12 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Allow ANY origin (Netlify, localhost, etc.)
-        configuration.setAllowedOriginPatterns(List.of("*"));
+        // Restrict to specific trusted domains
+        configuration.setAllowedOrigins(List.of(
+                "https://myoptifit.netlify.app",
+                "http://localhost:5173", // Vite Dev
+                "http://localhost:5177" // Alternate Dev Port
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

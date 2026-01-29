@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/workouts")
-@CrossOrigin(origins = "http://localhost:5173") // Allow Vite frontend
+// Allow Vite frontend
 public class WorkoutController {
 
     private final WorkoutService workoutService;
